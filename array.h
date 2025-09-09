@@ -7,6 +7,9 @@
 #define DA_INIT_CAP 256
 #endif
 
+/*
+ * Allocate memory for a dynamic array
+ * */
 #define da_alloc(arr, need)                                                    \
   do {                                                                         \
     if ((need) > (arr)->capacity) {                                            \
@@ -45,3 +48,9 @@
     assert((arr)->length > idx);                                               \
     (arr)->items[(idx)] = (arr)->items[--(arr)->length];                       \
   } while (0)
+
+#define da_get(arr, idx)                                                       \
+  (arr)->items[assert((arr)->length > (size_t)(idx)), (size_t)(idx)]
+
+#define da_set(arr, idx, val)                                                  \
+  (arr)->items[assert((arr)->length > (size_t)(idx)), (size_t)(idx)] = (val)
