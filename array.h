@@ -54,3 +54,10 @@
 
 #define da_set(arr, idx, val)                                                  \
   (arr)->items[assert((arr)->length > (size_t)(idx)), (size_t)(idx)] = (val)
+
+#define da_clear(arr)                                                          \
+  do {                                                                         \
+    (arr)->length = 0;                                                         \
+  } while (0)
+
+#define da_len(arr) (arr)->length
