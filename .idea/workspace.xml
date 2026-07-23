@@ -3,9 +3,12 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
-  <component name="CMakePresetLoader"><![CDATA[{
-  "useNewFormat": true
-}]]></component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+  </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
   <component name="CMakeProjectFlavorService">
     <option name="flavorId" value="CMakePlainProjectFlavor" />
   </component>
@@ -14,7 +17,8 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="cstd" targetName="cstd" />
+      <config projectName="cppstd" targetName="cstd" />
+      <config projectName="cppstd" targetName="cppstd" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -23,11 +27,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8cdc8079-1e36-4a5b-8239-d73be655896f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/strings.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/test.c" afterDir="false" />
+    <list default="true" id="8cdc8079-1e36-4a5b-8239-d73be655896f" name="Changes" comment="feat: started string implementation">
+      <change afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/strings.h" beforeDir="false" afterPath="$PROJECT_DIR$/strings.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +58,11 @@
     <option name="myRunOnSave" value="true" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -96,6 +107,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "CMake Application.cppstd.executor": "Debug",
     "CMake Application.cstd.executor": "Debug",
     "CidrDebugProfileConversion": "true",
     "Makefile Target.Array.executor": "Run",
@@ -118,12 +130,17 @@
   }
 }]]></component>
   <component name="RunManager" selected="CMake Application.cstd">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cppstd" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cppstd" TARGET_NAME="cppstd" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cppstd" RUN_TARGET_NAME="cppstd">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="cstd" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cstd" TARGET_NAME="cstd" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cstd" RUN_TARGET_NAME="cstd">
+    <configuration name="cstd" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cppstd" TARGET_NAME="cstd" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cppstd" RUN_TARGET_NAME="cstd">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -135,6 +152,7 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="CMake Application.cppstd" />
       <item itemvalue="CMake Application.cstd" />
       <item itemvalue="Makefile Target.array" />
     </list>
@@ -155,8 +173,23 @@
       <option name="presentableId" value="Default" />
       <updated>1784722411987</updated>
       <workItem from="1784722413029" duration="1536000" />
-      <workItem from="1784724268787" duration="9619000" />
+      <workItem from="1784724268787" duration="9665000" />
+      <workItem from="1784737810728" duration="332000" />
+      <workItem from="1784812262855" duration="3628000" />
     </task>
+    <task id="LOCAL-00001" summary="feat: started string implementation">
+      <option name="closed" value="true" />
+      <created>1784737728544</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1784737728544</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: started string implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: started string implementation" />
   </component>
 </project>

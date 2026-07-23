@@ -1,8 +1,9 @@
 #include <assert.h>
 #define DA_INIT_CAP 2
-#include "array.h"
 #include <stdio.h>
+#include "array.h"
 
+#define STRINGS_IMPLEMENTATION
 #include "strings.h"
 
 typedef struct {
