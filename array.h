@@ -7,9 +7,6 @@
 #define DA_INIT_CAP 256
 #endif
 
-/*
- * Allocate memory for a dynamic array
- * */
 #define da_alloc(arr, need)                                                    \
   do {                                                                         \
     if ((need) > (arr)->capacity) {                                            \

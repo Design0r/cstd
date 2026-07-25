@@ -5,11 +5,13 @@ include_directories(.)
 add_executable(cstd
         array.h
         strings.h
-        main.c)
+        main.c
+        vec.h)
 
 project(cppstd CXX)
 set(CMAKE_CXX_STANDARD 98)
 add_executable(cppstd
         array.h
         strings.h
-        main.cpp)
+        main.cpp
+        vec.h)

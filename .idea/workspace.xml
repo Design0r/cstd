@@ -5,7 +5,9 @@
   </component>
   <component name="BackendCodeEditorMiscSettings">
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppFormatterOtherPage" type="string" />
+    <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
   </component>
   <component name="CMakePresetLoader">{
   &quot;useNewFormat&quot;: true
@@ -29,10 +31,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8cdc8079-1e36-4a5b-8239-d73be655896f" name="Changes" comment="feat: added cpp compatibility for strings.h">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vec.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/strings.h" beforeDir="false" afterPath="$PROJECT_DIR$/strings.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,12 +73,12 @@
     &quot;assignee&quot;: &quot;Design0r&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Design0r/cstd.git&quot;,
-    &quot;accountId&quot;: &quot;d92e2415-ade5-491c-b7b4-9d216d833f28&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/design0r/cstd",
+    "accountId": "d92e2415-ade5-491c-b7b4-9d216d833f28"
   }
-}</component>
+}]]></component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="StYCB71K" />
   </component>
@@ -106,8 +109,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "CMake Application.cppstd.executor": "Debug",
-    "CMake Application.cstd.executor": "Debug",
+    "CMake Application.cppstd.executor": "Run",
+    "CMake Application.cstd.executor": "Run",
     "CidrDebugProfileConversion": "true",
     "Makefile Target.Array.executor": "Run",
     "Makefile Target.array.executor": "Run",
@@ -124,15 +127,16 @@
     "code.cleanup.on.save": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "/Users/alex/GitHub/cstd",
     "org.rust.first.attach.projects": "true",
     "rearrange.code.on.save": "true",
     "settings.editor.selected.configurable": "preferences.sourceCode.C++"
   }
 }]]></component>
   <component name="RunManager" selected="CMake Application.cstd">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="cppstd" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cppstd" TARGET_NAME="cppstd" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cppstd" RUN_TARGET_NAME="cppstd">
@@ -164,6 +168,7 @@
       <workItem from="1784724268787" duration="9665000" />
       <workItem from="1784737810728" duration="332000" />
       <workItem from="1784812262855" duration="4771000" />
+      <workItem from="1784980649652" duration="523000" />
     </task>
     <task id="LOCAL-00001" summary="feat: started string implementation">
       <option name="closed" value="true" />

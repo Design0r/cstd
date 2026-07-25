@@ -4,6 +4,7 @@
 #include "array.h"
 
 #define STRINGS_IMPLEMENTATION
+#include "vec.h"
 #include "strings.h"
 
 typedef struct {
@@ -36,6 +37,11 @@ int main() {
 	for (int i = 0; i < found; i++) {
 		printf("len: %zu:"STR_FMT"\n", out[i].len,STR_ARG(out[i]));
 	}
+
+	Vec3 v = vec3(2.0f, 1.0f, 3.0f);
+	Vec3 b = vec3_mulf(v, 2.0f);
+
+	printf(VEC3_FMT"\n", VEC3_SPREAD(b));
 
 	return 0;
 }
