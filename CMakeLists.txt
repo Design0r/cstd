@@ -9,7 +9,7 @@ add_executable(cstd
         vec.h)
 
 project(cppstd CXX)
-set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_STANDARD 17)
 add_executable(cppstd
         array.h
         strings.h
