@@ -1,9 +1,8 @@
-#define STRINGS_IMPLEMENTATION
-#include "strings.h"
+#define CSTD_IMPLEMENTATION
+#include "cstd.h"
 
 #include <cstdio>
 
-#include "vec.h"
 
 int main() {
 	Str s = Str::from("hallo  , slkfsf  ");

@@ -14,4 +14,5 @@ add_executable(cppstd
         array.h
         strings.h
         main.cpp
-        vec.h)
+        vec.h
+        cstd.h)

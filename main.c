@@ -1,11 +1,8 @@
 #include <assert.h>
 #define DA_INIT_CAP 2
 #include <stdio.h>
-#include "array.h"
-
-#define STRINGS_IMPLEMENTATION
-#include "vec.h"
-#include "strings.h"
+#define CSTD_IMPLEMENTATION
+#include "cstd.h"
 
 typedef struct {
 	int *items;
