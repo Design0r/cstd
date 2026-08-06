@@ -26,7 +26,7 @@ int main() {
 
 	printf("len: %zu, cap: %zu\n", a.length, a.capacity);
 
-	String s = string_from_cstr("hallo was geht");
+	String s = STRING("hallo was geht");
 	Str test = STR("das ist ein test");
 	Str out[10];
 	int found = str_split(test, ' ', out, 10);

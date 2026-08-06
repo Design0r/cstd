@@ -13,14 +13,16 @@
 #ifdef __cplusplus
 #include <cassert>
 #include <cmath>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #else
 #include <assert.h>
-#include <stdbool.h>
-#include <string.h>
 #include <math.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #endif
 
 // ========
@@ -160,7 +162,7 @@ typedef struct Vec3 {
 
 #define da_last(arr) (arr)->items[assert((arr)->length > 0), (arr)->length - 1]
 
-#define da_pop(arr) (arr)->items[(assert((arr)->length > 0)), --(arr)->length]
+#define da_pop(arr) (arr)->items[assert((arr)->length > 0), --(arr)->length]
 
 #define da_remove(arr, idx)                                                    \
   do {                                                                         \
@@ -182,7 +184,17 @@ typedef struct Vec3 {
 #define da_len(arr) (arr)->length
 
 // ========
-// Utils
+// Arena
+// ========
+
+typedef struct {
+	size_t capacity;
+	size_t cursor;
+	uint8_t *memory;
+} Arena;
+
+// ========
+// String
 // ========
 
 #define STR(s)                                                                 \
@@ -197,10 +209,6 @@ typedef struct Vec3 {
 
 const char WHITESPACE[] = " \r\t\n\0";
 CSTD_DEF bool is_whitespace(char c);
-
-// ========
-// String
-// ========
 
 CSTD_DEF String string_from_cstr(const char *cstr);
 CSTD_DEF size_t string_len(String s);
@@ -319,9 +327,9 @@ CSTD_DEF Vec3 &operator+=(Vec3 &a, float b);
 CSTD_DEF Vec3 operator-(Vec3 a, Vec3 b);
 CSTD_DEF Vec3 &operator-=(Vec3 &a, Vec3 b);
 
-CSTD_DEF Vec3 operator*(Vec3 a, Vec3 b);
-CSTD_DEF Vec3 operator*(Vec3 a, float b);
-CSTD_DEF Vec3 operator*(float a, Vec3 b);
+CSTD_DEF Vec3 operator *(Vec3 a, Vec3 b);
+CSTD_DEF Vec3 operator *(Vec3 a, float b);
+CSTD_DEF Vec3 operator *(float a, Vec3 b);
 CSTD_DEF Vec3 &operator*=(Vec3 &a, Vec3 b);
 CSTD_DEF Vec3 &operator*=(Vec3 &a, float b);
 
@@ -331,6 +339,20 @@ CSTD_DEF Vec3 operator/(float a, Vec3 b);
 CSTD_DEF Vec3 &operator/=(Vec3 &a, Vec3 b);
 CSTD_DEF Vec3 &operator/=(Vec3 &a, float b);
 #endif
+
+// ==================================
+// Arena
+// ==================================
+
+CSTD_DEF void arena_init(Arena *a, size_t size, uint8_t *memory);
+CSTD_DEF void arena_init_malloc(Arena *a, size_t size);
+#define arena_alloc_type(arena, type) (type *)arena_alloc_aligned((arena), sizeof(type), _Alignof(type))
+
+#define arena_alloc(arena, type, count) (type *)arena_alloc_aligned((arena), sizeof(type) * count, _Alignof(type))
+
+CSTD_DEF uint8_t *arena_alloc_aligned(Arena *a, size_t size, size_t align);
+CSTD_DEF void arena_free(Arena *a);
+CSTD_DEF void arena_clear(Arena *a);
 
 #ifdef CSTD_IMPLEMENTATION
 
@@ -1041,6 +1063,47 @@ CSTD_DEF Vec3 &operator/=(Vec3 &a, float b) {
 	}
 
 	return a;
+}
+
+// ==================================
+// Arena
+// ==================================
+
+CSTD_DEF void arena_init(Arena *a, const size_t size, uint8_t *memory) {
+	assert(memory && "arena initialized with memory nullptr");
+	a->capacity = size;
+	a->memory = memory;
+	a->cursor = 0;
+}
+
+CSTD_DEF void arena_init_malloc(Arena *a, const size_t size) {
+	a->capacity = size;
+	a->memory = (uint8_t *) malloc(size);
+	a->cursor = 0;
+}
+
+CSTD_DEF uint8_t *arena_alloc_aligned(Arena *a, const size_t size, const size_t align) {
+	if (!a) return NULL;
+
+	uintptr_t current = (uintptr_t) &a->memory[a->cursor];
+	uintptr_t aligned = (current + (align - 1)) & ~(align - 1);
+	size_t padding = aligned - current;
+
+	if (a->cursor + padding + size > a->capacity) return NULL;
+
+	a->cursor += padding;
+	uint8_t *ptr = &a->memory[a->cursor];
+	a->cursor += size;
+	return ptr;
+}
+
+CSTD_DEF void arena_free(Arena *a) {
+	if (!a) return;
+	if (a->memory) free(a->memory);
+}
+
+CSTD_DEF void arena_clear(Arena *a) {
+	a->cursor = 0;
 }
 
 #endif
