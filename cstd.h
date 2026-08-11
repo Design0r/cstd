@@ -220,11 +220,14 @@ CSTD_DEF void string_free(String s);
 // Str
 // ========
 
+CSTD_DEF Str str(const char *cstr, size_t len);
 CSTD_DEF Str str_from_cstr(const char *cstr);
 CSTD_DEF Str str_trim_left(Str s);
 CSTD_DEF Str str_trim_right(Str s);
 CSTD_DEF Str str_trim(Str s);
 CSTD_DEF size_t str_len(Str s);
+CSTD_DEF Str str_copy(Str s);
+CSTD_DEF Str str_copy_offset(Str s, size_t offset);
 CSTD_DEF int str_split(Str s, char delim, Str *out, int out_size);
 CSTD_DEF int str_split_str(Str s, Str delim, Str *out, int out_size);
 CSTD_DEF bool str_eq(Str a, Str b);
@@ -264,23 +267,23 @@ CSTD_DEF bool vec2_is_zero(Vec2 a);
 CSTD_DEF Vec2 operator+(Vec2 a, Vec2 b);
 CSTD_DEF Vec2 operator+(Vec2 a, float b);
 CSTD_DEF Vec2 operator+(float a, Vec2 b);
-CSTD_DEF Vec2 &operator+=(Vec2 &a, Vec2 b);
-CSTD_DEF Vec2 &operator+=(Vec2 &a, float b);
+CSTD_DEF Vec2&operator+=(Vec2&a, Vec2 b);
+CSTD_DEF Vec2&operator+=(Vec2&a, float b);
 
 CSTD_DEF Vec2 operator-(Vec2 a, Vec2 b);
-CSTD_DEF Vec2 &operator-=(Vec2 &a, Vec2 b);
+CSTD_DEF Vec2&operator-=(Vec2&a, Vec2 b);
 
 CSTD_DEF Vec2 operator *(Vec2 a, Vec2 b);
 CSTD_DEF Vec2 operator *(Vec2 a, float b);
 CSTD_DEF Vec2 operator *(float a, Vec2 b);
-CSTD_DEF Vec2 &operator*=(Vec2 &a, Vec2 b);
-CSTD_DEF Vec2 &operator*=(Vec2 &a, float b);
+CSTD_DEF Vec2&operator*=(Vec2&a, Vec2 b);
+CSTD_DEF Vec2&operator*=(Vec2&a, float b);
 
 CSTD_DEF Vec2 operator/(Vec2 a, Vec2 b);
 CSTD_DEF Vec2 operator/(Vec2 a, float b);
 CSTD_DEF Vec2 operator/(float a, Vec2 b);
-CSTD_DEF Vec2 &operator/=(Vec2 &a, Vec2 b);
-CSTD_DEF Vec2 &operator/=(Vec2 &a, float b);
+CSTD_DEF Vec2&operator/=(Vec2&a, Vec2 b);
+CSTD_DEF Vec2&operator/=(Vec2&a, float b);
 #endif
 
 // ==================================
@@ -321,23 +324,23 @@ CSTD_DEF bool vec3_is_zero(Vec3 a);
 CSTD_DEF Vec3 operator+(Vec3 a, Vec3 b);
 CSTD_DEF Vec3 operator+(Vec3 a, float b);
 CSTD_DEF Vec3 operator+(float a, Vec3 b);
-CSTD_DEF Vec3 &operator+=(Vec3 &a, Vec3 b);
-CSTD_DEF Vec3 &operator+=(Vec3 &a, float b);
+CSTD_DEF Vec3&operator+=(Vec3&a, Vec3 b);
+CSTD_DEF Vec3&operator+=(Vec3&a, float b);
 
 CSTD_DEF Vec3 operator-(Vec3 a, Vec3 b);
-CSTD_DEF Vec3 &operator-=(Vec3 &a, Vec3 b);
+CSTD_DEF Vec3&operator-=(Vec3&a, Vec3 b);
 
 CSTD_DEF Vec3 operator *(Vec3 a, Vec3 b);
 CSTD_DEF Vec3 operator *(Vec3 a, float b);
 CSTD_DEF Vec3 operator *(float a, Vec3 b);
-CSTD_DEF Vec3 &operator*=(Vec3 &a, Vec3 b);
-CSTD_DEF Vec3 &operator*=(Vec3 &a, float b);
+CSTD_DEF Vec3&operator*=(Vec3&a, Vec3 b);
+CSTD_DEF Vec3&operator*=(Vec3&a, float b);
 
 CSTD_DEF Vec3 operator/(Vec3 a, Vec3 b);
 CSTD_DEF Vec3 operator/(Vec3 a, float b);
 CSTD_DEF Vec3 operator/(float a, Vec3 b);
-CSTD_DEF Vec3 &operator/=(Vec3 &a, Vec3 b);
-CSTD_DEF Vec3 &operator/=(Vec3 &a, float b);
+CSTD_DEF Vec3&operator/=(Vec3&a, Vec3 b);
+CSTD_DEF Vec3&operator/=(Vec3&a, float b);
 #endif
 
 // ==================================
@@ -393,6 +396,10 @@ CSTD_DEF Str string_to_str(const String s) {
 }
 
 CSTD_DEF void string_free(String s) { free((void *) s.data); }
+
+CSTD_DEF Str str(const char *cstr, size_t len) {
+	return (Str){.len = len, .data = cstr};
+}
 
 // ========
 // Str
@@ -457,7 +464,26 @@ CSTD_DEF int str_split(const Str s, const char delim, Str *out,
 }
 
 CSTD_DEF int str_split_str(Str s, Str delim, Str *out, int out_size) {
-	assert(0 && "str_split_str not yet implemented");
+	int found = 0;
+	size_t start = 0;
+
+	STR_FOR(s, i) {
+		Str temp = str(s.data + i, delim.len);
+		if (str_eq(temp, delim)) {
+			if (i > start) {
+				if (found >= out_size)
+					return found;
+				out[found++] = (Str){.len = i - start, .data = s.data + start};
+			}
+			start = i + delim.len;
+		}
+	}
+
+	if (s.len > start && found < out_size) {
+		out[found++] = (Str){.len = s.len - start, .data = s.data + start};
+	}
+
+	return found;
 }
 
 CSTD_DEF Str str_from_cstr(const char *cstr) {
@@ -828,13 +854,13 @@ CSTD_DEF Vec2 operator+(float a, Vec2 b) {
 	return vec2_addf(b, a);
 }
 
-CSTD_DEF Vec2 &operator+=(Vec2 &a, Vec2 b) {
+CSTD_DEF Vec2&operator+=(Vec2&a, Vec2 b) {
 	a.x += b.x;
 	a.y += b.y;
 	return a;
 }
 
-CSTD_DEF Vec2 &operator+=(Vec2 &a, float b) {
+CSTD_DEF Vec2&operator+=(Vec2&a, float b) {
 	a.x += b;
 	a.y += b;
 	return a;
@@ -844,7 +870,7 @@ CSTD_DEF Vec2 operator-(Vec2 a, Vec2 b) {
 	return vec2_sub(a, b);
 }
 
-CSTD_DEF Vec2 &operator-=(Vec2 &a, Vec2 b) {
+CSTD_DEF Vec2&operator-=(Vec2&a, Vec2 b) {
 	a.x -= b.x;
 	a.y -= b.y;
 	return a;
@@ -862,13 +888,13 @@ CSTD_DEF Vec2 operator *(float a, Vec2 b) {
 	return vec2_mulf(b, a);
 }
 
-CSTD_DEF Vec2 &operator*=(Vec2 &a, Vec2 b) {
+CSTD_DEF Vec2&operator*=(Vec2&a, Vec2 b) {
 	a.x *= b.x;
 	a.y *= b.y;
 	return a;
 }
 
-CSTD_DEF Vec2 &operator*=(Vec2 &a, float b) {
+CSTD_DEF Vec2&operator*=(Vec2&a, float b) {
 	a.x *= b;
 	a.y *= b;
 	return a;
@@ -886,7 +912,7 @@ CSTD_DEF Vec2 operator/(float a, Vec2 b) {
 	return vec2_divf(b, a);
 }
 
-CSTD_DEF Vec2 &operator/=(Vec2 &a, Vec2 b) {
+CSTD_DEF Vec2&operator/=(Vec2&a, Vec2 b) {
 	if (vec2_is_zero(b)) {
 		a.x = 0;
 		a.y = 0;
@@ -898,7 +924,7 @@ CSTD_DEF Vec2 &operator/=(Vec2 &a, Vec2 b) {
 	return a;
 }
 
-CSTD_DEF Vec2 &operator/=(Vec2 &a, float b) {
+CSTD_DEF Vec2&operator/=(Vec2&a, float b) {
 	if (b == 0.0f) {
 		a.x = 0;
 		a.y = 0;
@@ -974,14 +1000,14 @@ CSTD_DEF Vec3 operator+(float a, Vec3 b) {
 	return vec3_addf(b, a);
 }
 
-CSTD_DEF Vec3 &operator+=(Vec3 &a, Vec3 b) {
+CSTD_DEF Vec3&operator+=(Vec3&a, Vec3 b) {
 	a.x += b.x;
 	a.y += b.y;
 	a.z += b.z;
 	return a;
 }
 
-CSTD_DEF Vec3 &operator+=(Vec3 &a, float b) {
+CSTD_DEF Vec3&operator+=(Vec3&a, float b) {
 	a.x += b;
 	a.y += b;
 	a.z += b;
@@ -992,7 +1018,7 @@ CSTD_DEF Vec3 operator-(Vec3 a, Vec3 b) {
 	return vec3_sub(a, b);
 }
 
-CSTD_DEF Vec3 &operator-=(Vec3 &a, Vec3 b) {
+CSTD_DEF Vec3&operator-=(Vec3&a, Vec3 b) {
 	a.x -= b.x;
 	a.y -= b.y;
 	a.z -= b.z;
@@ -1011,14 +1037,14 @@ CSTD_DEF Vec3 operator *(float a, Vec3 b) {
 	return vec3_mulf(b, a);
 }
 
-CSTD_DEF Vec3 &operator*=(Vec3 &a, Vec3 b) {
+CSTD_DEF Vec3&operator*=(Vec3&a, Vec3 b) {
 	a.x *= b.x;
 	a.y *= b.y;
 	a.z *= b.z;
 	return a;
 }
 
-CSTD_DEF Vec3 &operator*=(Vec3 &a, float b) {
+CSTD_DEF Vec3&operator*=(Vec3&a, float b) {
 	a.x *= b;
 	a.y *= b;
 	a.z *= b;
@@ -1037,7 +1063,7 @@ CSTD_DEF Vec3 operator/(float a, Vec3 b) {
 	return vec3_divf(b, a);
 }
 
-CSTD_DEF Vec3 &operator/=(Vec3 &a, Vec3 b) {
+CSTD_DEF Vec3&operator/=(Vec3&a, Vec3 b) {
 	if (vec3_is_zero(b)) {
 		a.x = 0;
 		a.y = 0;
@@ -1051,7 +1077,7 @@ CSTD_DEF Vec3 &operator/=(Vec3 &a, Vec3 b) {
 	return a;
 }
 
-CSTD_DEF Vec3 &operator/=(Vec3 &a, float b) {
+CSTD_DEF Vec3&operator/=(Vec3&a, float b) {
 	if (b == 0.0f) {
 		a.x = 0;
 		a.y = 0;

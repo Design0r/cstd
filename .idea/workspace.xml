@@ -24,15 +24,16 @@
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_CXX_FLAGS=&quot;-Wall -Wextra -Werror&quot;" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8cdc8079-1e36-4a5b-8239-d73be655896f" name="Changes" comment="refactor: removed static prefix for c++, added [[nodiscard]] for c++ &gt;= 17">
-      <change afterPath="$PROJECT_DIR$/cstd.h" afterDir="false" />
+    <list default="true" id="8cdc8079-1e36-4a5b-8239-d73be655896f" name="Changes" comment="fead: added arena implementation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vec.h" beforeDir="false" afterPath="$PROJECT_DIR$/vec.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cstd.h" beforeDir="false" afterPath="$PROJECT_DIR$/cstd.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +78,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://diff.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="StYCB71K" />
@@ -109,7 +110,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;CMake Application.cppstd.executor&quot;: &quot;Run&quot;,
+    &quot;CMake Application.cppstd.executor&quot;: &quot;Debug&quot;,
     &quot;CMake Application.cstd.executor&quot;: &quot;Debug&quot;,
     &quot;CidrDebugProfileConversion&quot;: &quot;true&quot;,
     &quot;Makefile Target.Array.executor&quot;: &quot;Run&quot;,
@@ -129,15 +130,10 @@
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
     &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C++&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;CMakeSettings&quot;
   }
 }</component>
   <component name="RunManager" selected="CMake Application.cstd">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="cppstd" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cppstd" TARGET_NAME="cppstd" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cppstd" RUN_TARGET_NAME="cppstd">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -156,6 +152,25 @@
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
   </component>
+  <component name="SelectedDebugProfileService">{
+  &quot;profileIdByStamp&quot;: [
+    {
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;CMake Application.cstd&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:Debug&quot;
+      },
+      &quot;second&quot;: &quot;5ed1ec59-4709-4a31-8a8c-134fe7dd0768&quot;
+    },
+    {
+      &quot;first&quot;: {
+        &quot;##RUN_CONFIGURATION##&quot;: &quot;CMake Application.cppstd&quot;,
+        &quot;cmake&quot;: &quot;CMakeBuildProfile:Debug&quot;
+      },
+      &quot;second&quot;: &quot;99f8fe7c-2099-434b-8057-bbebf75e2526&quot;
+    }
+  ],
+  &quot;modificationCount&quot;: 7
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="8cdc8079-1e36-4a5b-8239-d73be655896f" name="Changes" comment="" />
@@ -167,6 +182,8 @@
       <workItem from="1784724268787" duration="9665000" />
       <workItem from="1784737810728" duration="332000" />
       <workItem from="1784812262855" duration="4771000" />
+      <workItem from="1786017644420" duration="1851000" />
+      <workItem from="1786346852909" duration="35000" />
     </task>
     <task id="LOCAL-00001" summary="feat: started string implementation">
       <option name="closed" value="true" />
@@ -184,13 +201,31 @@
       <option name="project" value="LOCAL" />
       <updated>1784821827638</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="refactor: moved all libs to single header file">
+      <option name="closed" value="true" />
+      <created>1786012217157</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1786012217157</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fead: added arena implementation">
+      <option name="closed" value="true" />
+      <created>1786019467581</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1786019467581</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: started string implementation" />
     <MESSAGE value="feat: added cpp compatibility for strings.h" />
     <MESSAGE value="refactor: removed static prefix for c++, added [[nodiscard]] for c++ &gt;= 17" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: removed static prefix for c++, added [[nodiscard]] for c++ &gt;= 17" />
+    <MESSAGE value="refactor: moved all libs to single header file" />
+    <MESSAGE value="fead: added arena implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="fead: added arena implementation" />
   </component>
 </project>

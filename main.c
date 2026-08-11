@@ -17,6 +17,7 @@ int main() {
 		da_append(&a, i);
 	}
 
+
 	assert(a.length == 10);
 	int val = da_pop(&a);
 	assert(a.length == 9);
@@ -27,12 +28,18 @@ int main() {
 	printf("len: %zu, cap: %zu\n", a.length, a.capacity);
 
 	String s = STRING("hallo was geht");
-	Str test = STR("das ist ein test");
+	Str test = STR("öäü");
 	Str out[10];
 	int found = str_split(test, ' ', out, 10);
 
 	for (int i = 0; i < found; i++) {
-		printf("len: %zu:"STR_FMT"\n", out[i].len,STR_ARG(out[i]));
+		printf("len: %zu:"STR_FMT"\n", out[i].len, STR_ARG(out[i]));
+	}
+
+	found = str_split_str(test, STR(" ö"), out, 10);
+
+	for (int i = 0; i < found; i++) {
+		printf("len: %zu:"STR_FMT"\n", out[i].len, STR_ARG(out[i]));
 	}
 
 	Vec3 v = vec3(2.0f, 1.0f, 3.0f);
