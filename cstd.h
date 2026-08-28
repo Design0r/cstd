@@ -214,11 +214,13 @@ const char WHITESPACE[] = " \r\t\n\0";
 CSTD_DEF bool is_whitespace(char c);
 
 CSTD_DEF String string_from_cstr(const char *cstr);
+CSTD_DEF String string_with_capacity(size_t capacity);
 CSTD_DEF size_t string_len(String s);
 CSTD_DEF bool string_startswith_str(String s, Str slice);
 CSTD_DEF Str string_to_str(String s);
 CSTD_DEF String string_copy(const String s);
 CSTD_DEF void string_free(String s);
+CSTD_DEF void string_clear(String *s);
 CSTD_DEF void string_append_string(String *a, String b);
 CSTD_DEF void string_append_str(String *a, Str b);
 CSTD_DEF void string_append_cstr(String *a, const char *b);
@@ -391,6 +393,18 @@ CSTD_DEF String string_from_cstr(const char *cstr) {
   memcpy(new_data, cstr, len);
   return (String){.len = len, .data = new_data, .capacity = len};
 }
+
+CSTD_DEF String string_with_capacity(size_t capacity) {
+  String result = {};
+  result.capacity = capacity;
+  if (capacity > 0) {
+    result.data = (char *)malloc(capacity);
+  }
+
+  return result;
+}
+
+CSTD_DEF void string_clear(String *s) { s->len = 0; }
 
 CSTD_DEF size_t string_len(const String s) { return s.len; }
 CSTD_DEF String string_copy(const String s) {
