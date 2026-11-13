@@ -81,8 +81,9 @@ typedef struct Str {
 #define VEC3_FMT "Vec3: x: %f, y: %f, z: %f"
 #define VEC3_SPREAD(vec) vec.x, vec.y, vec.z
 
-#define MAX(x, y) ((x) > (y)) ? (x) : (y)
-#define MIN(x, y) ((x) < (y)) ? (x) : (y)
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define CLAMP(val, min, max) (MIN(MAX((val), (min)), max))
 
 typedef struct Vec2 {
   float x, y;
@@ -224,6 +225,11 @@ CSTD_DEF void string_clear(String *s);
 CSTD_DEF void string_append_string(String *a, String b);
 CSTD_DEF void string_append_str(String *a, Str b);
 CSTD_DEF void string_append_cstr(String *a, const char *b);
+CSTD_DEF Str string_slice(String s, size_t start, size_t end);
+CSTD_DEF String string_replace_str(String s, Str old, Str new);
+CSTD_DEF String string_replace_cstr(String str, const char *old,
+                                    const char *new);
+CSTD_DEF void string_pop(String *s, size_t count);
 
 // ========
 // Str
@@ -245,6 +251,7 @@ CSTD_DEF bool str_startswith_cstr(Str a, const char *cstr);
 CSTD_DEF String str_to_string(Str s);
 CSTD_DEF void str_to_cstr(Str s, char *buf);
 CSTD_DEF char *str_to_cstr_m(Str s);
+CSTD_DEF Str str_slice(Str s, size_t start, size_t end);
 
 // ==================================
 // Vec 2
@@ -485,6 +492,49 @@ CSTD_DEF void string_append_cstr(String *a, const char *b) {
   a->len += b_len;
 }
 
+Str string_slice(String s, size_t start, size_t end) {
+  return (Str){.data = s.data + CLAMP(start, 0, s.len),
+               .len = CLAMP(end, 0, s.len)};
+}
+
+CSTD_DEF String string_replace_str(String s, Str old, Str new) {
+
+  String result = {0};
+
+  if (s.len < old.len) {
+    return result;
+  }
+
+  size_t copy_cursor = 0;
+
+  for (size_t i = 0; i <= (s.len - old.len); i++) {
+    Str slice = string_slice(s, i, old.len);
+    if (str_eq(slice, old)) {
+      string_append_str(&result, string_slice(s, copy_cursor, i - copy_cursor));
+
+      copy_cursor = i + old.len;
+      string_append_str(&result, new);
+    }
+  }
+
+  string_append_str(&result, string_slice(s, copy_cursor, s.len - copy_cursor));
+
+  return result;
+}
+
+CSTD_DEF String string_replace_cstr(String str, const char *old,
+                                    const char *new) {
+
+  Str old_str = str_from_cstr(old);
+  Str new_str = str_from_cstr(new);
+
+  return string_replace_str(str, old_str, new_str);
+}
+
+CSTD_DEF void string_pop(String *s, size_t count) {
+  s->len -= CLAMP(count, 0, s->len);
+}
+
 // ========
 // Str
 // ========
@@ -531,14 +581,14 @@ CSTD_DEF int str_split(const Str s, const char delim, Str *out, int out_size) {
       if (i > start) {
         if (found >= out_size)
           return found;
-        out[found++] = (Str){.len = i - start, .data = s.data + start};
+        out[found++] = str_slice(s, start, i - start);
       }
       start = i + 1;
     }
   }
 
   if (s.len > start && found < out_size) {
-    out[found++] = (Str){.len = s.len - start, .data = s.data + start};
+    out[found++] = str_slice(s, start, s.len - start);
   }
 
   return found;
@@ -549,19 +599,19 @@ CSTD_DEF int str_split_str(Str s, Str delim, Str *out, int out_size) {
   size_t start = 0;
 
   STR_FOR(s, i) {
-    Str temp = str(s.data + i, delim.len);
+    Str temp = str_slice(s, i, delim.len);
     if (str_eq(temp, delim)) {
       if (i > start) {
         if (found >= out_size)
           return found;
-        out[found++] = (Str){.len = i - start, .data = s.data + start};
+        out[found++] = str_slice(s, start, i - start);
       }
       start = i + delim.len;
     }
   }
 
   if (s.len > start && found < out_size) {
-    out[found++] = (Str){.len = s.len - start, .data = s.data + start};
+    out[found++] = str_slice(s, start, s.len - start);
   }
 
   return found;
@@ -600,6 +650,11 @@ CSTD_DEF char *str_to_cstr_m(Str s) {
 CSTD_DEF void str_to_cstr(Str s, char *buf) {
   memcpy(buf, s.data, s.len);
   buf[s.len] = '\0';
+}
+
+CSTD_DEF Str str_slice(Str s, size_t start, size_t end) {
+  return (Str){.data = s.data + CLAMP(start, 0, s.len),
+               .len = CLAMP(end, 0, s.len)};
 }
 
 // ==================================
