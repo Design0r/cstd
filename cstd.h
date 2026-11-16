@@ -214,11 +214,14 @@ typedef struct {
 const char WHITESPACE[] = " \r\t\n\0";
 CSTD_DEF bool is_whitespace(char c);
 
+CSTD_DEF void string_realloc(String *a, size_t needed_capacity);
 CSTD_DEF String string_from_cstr(const char *cstr);
 CSTD_DEF String string_with_capacity(size_t capacity);
 CSTD_DEF size_t string_len(String s);
 CSTD_DEF bool string_startswith_str(String s, Str slice);
 CSTD_DEF Str string_to_str(String s);
+CSTD_DEF char *string_to_cstr(String s);
+CSTD_DEF char *string_to_cstr_m(String s);
 CSTD_DEF String string_copy(const String s);
 CSTD_DEF void string_free(String s);
 CSTD_DEF void string_clear(String *s);
@@ -249,7 +252,7 @@ CSTD_DEF bool str_eq(Str a, Str b);
 CSTD_DEF bool str_startswith_str(Str a, Str b);
 CSTD_DEF bool str_startswith_cstr(Str a, const char *cstr);
 CSTD_DEF String str_to_string(Str s);
-CSTD_DEF void str_to_cstr(Str s, char *buf);
+CSTD_DEF void str_to_cstr(Str s, char *buf, size_t buf_size);
 CSTD_DEF char *str_to_cstr_m(Str s);
 CSTD_DEF Str str_slice(Str s, size_t start, size_t end);
 
@@ -394,10 +397,25 @@ CSTD_DEF bool is_whitespace(const char c) {
 // String
 // ========
 
+CSTD_DEF void string_realloc(String *a, size_t needed_capacity) {
+  if (a->capacity < needed_capacity) {
+    if (a->capacity == 0) {
+      a->capacity = DA_INIT_CAP;
+    }
+
+    while (a->capacity < needed_capacity) {
+      a->capacity *= 2;
+    }
+
+    a->data = realloc(a->data, a->capacity * sizeof(*(a->data)));
+  }
+}
+
 CSTD_DEF String string_from_cstr(const char *cstr) {
   size_t len = strlen(cstr);
-  char *new_data = (char *)malloc(len);
+  char *new_data = (char *)malloc(len + 1);
   memcpy(new_data, cstr, len);
+  new_data[len] = '\0';
   return (String){.len = len, .data = new_data, .capacity = len};
 }
 
@@ -414,10 +432,13 @@ CSTD_DEF String string_with_capacity(size_t capacity) {
 CSTD_DEF void string_clear(String *s) { s->len = 0; }
 
 CSTD_DEF size_t string_len(const String s) { return s.len; }
+
 CSTD_DEF String string_copy(const String s) {
   String result = s;
-  result.data = malloc(s.capacity);
+  size_t null_terminator = s.capacity > s.len ? 0 : 1;
+  result.data = malloc(s.capacity + null_terminator);
   memcpy(result.data, s.data, s.len);
+  result.data[s.len] = '\0';
   return result;
 }
 
@@ -438,58 +459,31 @@ CSTD_DEF Str str(const char *cstr, size_t len) {
 }
 
 CSTD_DEF void string_append_string(String *a, String b) {
-  size_t needed_capacity = a->len + b.len;
-  if (a->capacity < needed_capacity) {
-    if (a->capacity == 0) {
-      a->capacity = DA_INIT_CAP;
-    }
-
-    while (a->capacity < needed_capacity) {
-      a->capacity *= 2;
-    }
-
-    a->data = realloc(a->data, a->capacity * sizeof(*(a->data)));
-  }
+  size_t needed_capacity = a->len + b.len + 1;
+  string_realloc(a, needed_capacity);
 
   memcpy(a->data + a->len, b.data, b.len);
   a->len += b.len;
+  a->data[a->len] = '\0';
 }
 
 CSTD_DEF void string_append_str(String *a, Str b) {
-  size_t needed_capacity = a->len + b.len;
-  if (a->capacity < needed_capacity) {
-    if (a->capacity == 0) {
-      a->capacity = DA_INIT_CAP;
-    }
-
-    while (a->capacity < needed_capacity) {
-      a->capacity *= 2;
-    }
-
-    a->data = realloc(a->data, a->capacity * sizeof(*(a->data)));
-  }
+  size_t needed_capacity = a->len + b.len + 1;
+  string_realloc(a, needed_capacity);
 
   memcpy(a->data + a->len, b.data, b.len);
   a->len += b.len;
+  a->data[a->len] = '\0';
 }
 
 CSTD_DEF void string_append_cstr(String *a, const char *b) {
   size_t b_len = strlen(b);
-  size_t needed_capacity = a->len + b_len;
-  if (a->capacity < needed_capacity) {
-    if (a->capacity == 0) {
-      a->capacity = DA_INIT_CAP;
-    }
-
-    while (a->capacity < needed_capacity) {
-      a->capacity *= 2;
-    }
-
-    a->data = realloc(a->data, a->capacity * sizeof(*(a->data)));
-  }
+  size_t needed_capacity = a->len + b_len + 1;
+  string_realloc(a, needed_capacity);
 
   memcpy(a->data + a->len, b, b_len);
   a->len += b_len;
+  a->data[a->len] = '\0';
 }
 
 Str string_slice(String s, size_t start, size_t end) {
@@ -533,6 +527,15 @@ CSTD_DEF String string_replace_cstr(String str, const char *old,
 
 CSTD_DEF void string_pop(String *s, size_t count) {
   s->len -= CLAMP(count, 0, s->len);
+}
+
+CSTD_DEF char *string_to_cstr(String s) { return s.data; }
+
+CSTD_DEF char *string_to_cstr_m(String s) {
+  char *new_data = (char *)malloc(s.len + 1);
+  memcpy(new_data, s.data, s.len);
+  new_data[s.len] = '\0';
+  return new_data;
 }
 
 // ========
@@ -647,7 +650,10 @@ CSTD_DEF char *str_to_cstr_m(Str s) {
   return new_data;
 }
 
-CSTD_DEF void str_to_cstr(Str s, char *buf) {
+CSTD_DEF void str_to_cstr(Str s, char *buf, size_t buf_size) {
+  if (buf_size < s.len) {
+    return;
+  }
   memcpy(buf, s.data, s.len);
   buf[s.len] = '\0';
 }
