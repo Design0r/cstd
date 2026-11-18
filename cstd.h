@@ -248,13 +248,18 @@ CSTD_DEF Str str_copy(Str s);
 CSTD_DEF Str str_copy_offset(Str s, size_t offset);
 CSTD_DEF int str_split(Str s, char delim, Str *out, int out_size);
 CSTD_DEF int str_split_str(Str s, Str delim, Str *out, int out_size);
+CSTD_DEF Str str_split_first(const Str s, const char delim);
+CSTD_DEF Str str_split_last(const Str s, const char delim);
+CSTD_DEF Str str_split_first_str(const Str s, Str delim);
+CSTD_DEF Str str_split_last_str(const Str s, Str delim);
 CSTD_DEF bool str_eq(Str a, Str b);
 CSTD_DEF bool str_startswith_str(Str a, Str b);
 CSTD_DEF bool str_startswith_cstr(Str a, const char *cstr);
 CSTD_DEF String str_to_string(Str s);
 CSTD_DEF void str_to_cstr(Str s, char *buf, size_t buf_size);
 CSTD_DEF char *str_to_cstr_m(Str s);
-CSTD_DEF Str str_slice(Str s, size_t start, size_t end);
+CSTD_DEF Str str_slice(Str s, size_t start, size_t length);
+CSTD_DEF Str str_slice_idx(Str s, size_t start, size_t end);
 
 // ==================================
 // Vec 2
@@ -597,9 +602,81 @@ CSTD_DEF int str_split(const Str s, const char delim, Str *out, int out_size) {
   return found;
 }
 
+CSTD_DEF Str str_split_first(const Str s, const char delim) {
+  STR_FOR(s, i) {
+    if (s.data[i] == delim) {
+      return str_slice(s, 0, i);
+    }
+  }
+
+  return STR("");
+}
+
+CSTD_DEF Str str_split_first_str(const Str s, Str delim) {
+  STR_FOR(s, i) {
+    Str temp = str_slice(s, i, delim.len);
+    if (str_eq(temp, delim)) {
+      return str_slice(s, 0, i);
+    }
+  }
+
+  return STR("");
+}
+
+CSTD_DEF Str str_split_last_str(const Str s, Str delim) {
+  if (delim.len >= s.len) {
+    return STR("");
+  }
+
+  for (int i = s.len - 1 - delim.len; i > 0; i--) {
+    Str temp = str_slice(s, i, delim.len);
+    if (str_eq(temp, delim)) {
+      return str_slice_idx(s, i + delim.len, s.len);
+    }
+  }
+
+  return STR("");
+}
+
+CSTD_DEF Str str_split_last(const Str s, const char delim) {
+  for (int i = s.len - 1; i > 0; i--) {
+    if (s.data[i] == delim) {
+      return str_slice_idx(s, i + 1, s.len);
+    }
+  }
+
+  return STR("");
+}
+
+CSTD_DEF int str_split_reverse(const Str s, const char delim, Str *out,
+                               int out_size) {
+  int found = 0;
+  size_t start = s.len - 1;
+
+  for (size_t i = start; i > 0; i--) {
+    if (s.data[i] == delim) {
+      if (i < start) {
+        if (found >= out_size)
+          return found;
+        out[found++] = str_slice(s, start, start - i);
+      }
+      start = i - 1;
+    }
+  }
+
+  if (s.len > start && found < out_size) {
+    out[found++] = str_slice(s, start, s.len - start);
+  }
+
+  return found;
+}
+
 CSTD_DEF int str_split_str(Str s, Str delim, Str *out, int out_size) {
   int found = 0;
   size_t start = 0;
+
+  if (s.len < delim.len)
+    return 0;
 
   STR_FOR(s, i) {
     Str temp = str_slice(s, i, delim.len);
@@ -658,9 +735,14 @@ CSTD_DEF void str_to_cstr(Str s, char *buf, size_t buf_size) {
   buf[s.len] = '\0';
 }
 
-CSTD_DEF Str str_slice(Str s, size_t start, size_t end) {
+CSTD_DEF Str str_slice(Str s, size_t start, size_t length) {
   return (Str){.data = s.data + CLAMP(start, 0, s.len),
-               .len = CLAMP(end, 0, s.len)};
+               .len = CLAMP(length, 0, s.len)};
+}
+
+CSTD_DEF Str str_slice_idx(Str s, size_t start, size_t end) {
+  return (Str){.data = s.data + CLAMP(start, 0, s.len),
+               .len = CLAMP(end - start, 0, s.len)};
 }
 
 // ==================================
