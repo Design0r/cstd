@@ -4,6 +4,18 @@
 #define CSTD_DEF
 #endif
 
+#ifndef CSTD_MALLOC
+#define CSTD_MALLOC malloc
+#endif
+
+#ifndef CSTD_REALLOC
+#define CSTD_REALLOC realloc
+#endif
+
+#ifndef CSTD_FREE
+#define CSTD_FREE free
+#endif
+
 #ifdef __cplusplus
 #define STRUCT_LIT(type) type
 #else
@@ -145,7 +157,7 @@ typedef struct Vec3 {
         (arr)->capacity *= 2;                                                  \
       }                                                                        \
       (arr)->items =                                                           \
-          realloc((arr)->items, (arr)->capacity * sizeof(*(arr)->items));      \
+          CSTD_REALLOC((arr)->items, (arr)->capacity * sizeof(*(arr)->items)); \
       assert((arr)->items != NULL &&                                           \
              "Failed to reallocate dynamic array memory");                     \
     }                                                                          \
@@ -159,7 +171,7 @@ typedef struct Vec3 {
 
 #define da_free(arr)                                                           \
   do {                                                                         \
-    free((arr).items);                                                         \
+    CSTD_FREE((arr).items);                                                    \
     (arr).length = 0;                                                          \
     (arr).capacity = 0;                                                        \
   } while (0)
@@ -204,7 +216,7 @@ typedef struct {
 #define STR(s)                                                                 \
   (Str) { .len = sizeof(s) - 1, .data = s }
 #define STRING(s)                                                              \
-  (String) { .len = sizeof(s) - 1, .data = s }
+  (String) { .len = sizeof(s) - 1, .capacity = sizeof(s) - 1, .data = s }
 
 #define STR_FMT "%.*s"
 #define STR_ARG(s) (int)s.len, s.data
@@ -412,13 +424,13 @@ CSTD_DEF void string_realloc(String *a, size_t needed_capacity) {
       a->capacity *= 2;
     }
 
-    a->data = realloc(a->data, a->capacity * sizeof(*(a->data)));
+    a->data = CSTD_REALLOC(a->data, a->capacity * sizeof(*(a->data)));
   }
 }
 
 CSTD_DEF String string_from_cstr(const char *cstr) {
   size_t len = strlen(cstr);
-  char *new_data = (char *)malloc(len + 1);
+  char *new_data = (char *)CSTD_MALLOC(len + 1);
   memcpy(new_data, cstr, len);
   new_data[len] = '\0';
   return (String){.len = len, .data = new_data, .capacity = len};
@@ -428,7 +440,7 @@ CSTD_DEF String string_with_capacity(size_t capacity) {
   String result = {};
   result.capacity = capacity;
   if (capacity > 0) {
-    result.data = (char *)malloc(capacity);
+    result.data = (char *)CSTD_MALLOC(capacity);
   }
 
   return result;
@@ -441,7 +453,7 @@ CSTD_DEF size_t string_len(const String s) { return s.len; }
 CSTD_DEF String string_copy(const String s) {
   String result = s;
   size_t null_terminator = s.capacity > s.len ? 0 : 1;
-  result.data = malloc(s.capacity + null_terminator);
+  result.data = CSTD_MALLOC(s.capacity + null_terminator);
   memcpy(result.data, s.data, s.len);
   result.data[s.len] = '\0';
   return result;
@@ -457,7 +469,7 @@ CSTD_DEF Str string_to_str(const String s) {
   return (Str){.len = s.len, .data = s.data};
 }
 
-CSTD_DEF void string_free(String s) { free((void *)s.data); }
+CSTD_DEF void string_free(String s) { CSTD_FREE((void *)s.data); }
 
 CSTD_DEF Str str(const char *cstr, size_t len) {
   return (Str){.len = len, .data = cstr};
@@ -537,7 +549,7 @@ CSTD_DEF void string_pop(String *s, size_t count) {
 CSTD_DEF char *string_to_cstr(String s) { return s.data; }
 
 CSTD_DEF char *string_to_cstr_m(String s) {
-  char *new_data = (char *)malloc(s.len + 1);
+  char *new_data = (char *)CSTD_MALLOC(s.len + 1);
   memcpy(new_data, s.data, s.len);
   new_data[s.len] = '\0';
   return new_data;
@@ -715,13 +727,13 @@ CSTD_DEF bool str_startswith_cstr(Str a, const char *cstr) {
 }
 
 CSTD_DEF String str_to_string(Str s) {
-  char *new_data = (char *)malloc(s.len);
+  char *new_data = (char *)CSTD_MALLOC(s.len);
   memcpy(new_data, s.data, s.len);
   return (String){.len = s.len, .data = new_data, .capacity = s.len};
 }
 
 CSTD_DEF char *str_to_cstr_m(Str s) {
-  char *new_data = (char *)malloc(s.len + 1);
+  char *new_data = (char *)CSTD_MALLOC(s.len + 1);
   memcpy(new_data, s.data, s.len);
   new_data[s.len] = '\0';
   return new_data;
@@ -1224,7 +1236,7 @@ CSTD_DEF void arena_init(Arena *a, const size_t size, uint8_t *memory) {
 
 CSTD_DEF void arena_init_malloc(Arena *a, const size_t size) {
   a->capacity = size;
-  a->memory = (uint8_t *)malloc(size);
+  a->memory = (uint8_t *)CSTD_MALLOC(size);
   a->cursor = 0;
 }
 
@@ -1250,7 +1262,7 @@ CSTD_DEF void arena_free(Arena *a) {
   if (!a)
     return;
   if (a->memory)
-    free(a->memory);
+    CSTD_FREE(a->memory);
 }
 
 CSTD_DEF void arena_clear(Arena *a) { a->cursor = 0; }
